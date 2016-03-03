@@ -185,6 +185,20 @@ function ItemDAO(database) {
          *
          */
 
+         var toSkip = page * itemsPerPage;
+
+         var aggrList = [
+           { $match: { $text: { $search: query } } },
+           { $skip: toSkip },
+           { $limit: itemsPerPage }
+         ];
+
+         var tems = this.db.collection('item').aggregate(aggrList)
+         .toArray(function(err, docs) {
+           callback(docs);
+         });
+
+        /*
         var item = this.createDummyItem();
         var items = [];
         for (var i=0; i<5; i++) {
@@ -194,6 +208,7 @@ function ItemDAO(database) {
         // TODO-lab2A Replace all code above (in this method).
 
         callback(items);
+        */
     }
 
 
@@ -211,7 +226,18 @@ function ItemDAO(database) {
         *
         */
 
-        callback(numItems);
+        var aggrList = [
+          { $match: { $text: { $search: query } } },
+          { $group: { "_id": query, "num": { $sum: 1 } } }
+        ]
+
+        var numItems = this.db.collection('item').aggregate(aggrList)
+        .toArray(function(err, docs) {
+          numItems = docs[0].num;
+          callback(numItems);
+        });
+
+        //callback(numItems);
     }
 
 
