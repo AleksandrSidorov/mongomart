@@ -252,11 +252,17 @@ function ItemDAO(database) {
          *
          */
 
-        var item = this.createDummyItem();
+        var item = this.db.collection('item').findOne( { _id: itemId }, {}, function(err, doc) {
+          assert.equal(err, null);
+          callback(doc);
+        });
+
+
+        //var item = this.createDummyItem();
 
         // TODO-lab3 Replace all code above (in this method).
 
-        callback(item);
+        //callback(item);
     }
 
 
