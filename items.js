@@ -297,9 +297,21 @@ function ItemDAO(database) {
             date: Date.now()
         }
 
+        this.db.collection('item').updateOne(
+          { _id: itemId },
+          { $push: { reviews: reviewDoc }},
+          {},
+          function(err, result) {
+            assert.equal(err, null);
+            callback(result);
+          }
+        );
+
+        /*
         var dummyItem = this.createDummyItem();
         dummyItem.reviews = [reviewDoc];
         callback(dummyItem);
+        */
     }
 
 
